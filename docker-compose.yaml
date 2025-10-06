@@ -1,32 +1,47 @@
-version: "3"
+version: "3.8"
+
 services:
-  csgo_updater:
-    container_name: "csgo_updater"
-    image: "timche/csgo-updater"
-    restart: "unless-stopped"
-    networks:
-      - csgo_network
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+  cs2-server:
+    image: joedwards32/cs2
+    container_name: cs2-server
+    restart: unless-stopped
     environment:
-      UPDATER_CONTAINER_IMAGE: "timche/csgo"
-      UPDATER_POLL_INTERVAL: 60
+      SRCDS_TOKEN: "4FC0DF45A24B88B687B2CF41D39CBC1D"
+      CS2_SERVERNAME: "Houmei"
 
-  csgo_practice:
-    container_name: "csgo_practice"
-    image: "timche/csgo:pug-practice"
-    restart: "unless-stopped"
-    networks:
-      - csgo_network
-    volumes:
-      - "/srv/docker/containers/csgo_practice/:/home/csgo/server:rw"
-    env_file:
-      - practice.env
+      CS2_PW: "bier"
+      CS2_RCONPW: "bieristgeil"
+
+      CS2_MAXPLAYERS: 10
+
+      CS2_GAMEALIAS: "competitive"
+      CS2_GAMETYPE: 0
+      CS2_GAMEMODE: 1
+      CS2_MAPGROUP: "mg_active"
+      CS2_STARTMAP: "de_inferno"
+
+      CS2_BOT_DIFFICULTY: 1
+      CS2_BOT_QUOTA: 0
+      CS2_BOT_QUOTA_MODE: "fill"
+
+      TV_ENABLE: 1
+      TV_PORT: 27020
+      TV_PW: "sourcetvpassword"
+
+      CS2_LOG: "on"
+      CS2_LOG_MONEY: 1
+      CS2_LOG_DETAIL: 3
+
+      DEBUG: 0
+      STEAMAPPVALIDATE: 0
+
+      # Additional arguments (optional)
+      CS2_ADDITIONAL_ARGS: ""
     ports:
-      - "27015:27015/udp"
       - "27015:27015/tcp"
+      - "27015:27015/udp"
       - "27020:27020/udp"
-
-networks:
-  csgo_network:
-    internal: true
+      # RCON port (TCP, optional - default is integrated with game port)
+      # - "27050:27050/tcp"  # Uncomment if using CS2_RCON_PORT=27050
+    volumes:
+      - ./cs2-data:/home/steam/cs2-dedicated
