@@ -1,0 +1,32 @@
+version: "3"
+services:
+  csgo_updater:
+    container_name: "csgo_updater"
+    image: "timche/csgo-updater"
+    restart: "unless-stopped"
+    networks:
+      - csgo_network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      UPDATER_CONTAINER_IMAGE: "timche/csgo"
+      UPDATER_POLL_INTERVAL: 60
+
+  csgo_practice:
+    container_name: "csgo_practice"
+    image: "timche/csgo:pug-practice"
+    restart: "unless-stopped"
+    networks:
+      - csgo_network
+    volumes:
+      - "/srv/docker/containers/csgo_practice/:/home/csgo/server:rw"
+    env_file:
+      - practice.env
+    ports:
+      - "27015:27015/udp"
+      - "27015:27015/tcp"
+      - "27020:27020/udp"
+
+networks:
+  csgo_network:
+    internal: true
